@@ -4,9 +4,8 @@
 #include <nvs_flash.h>
 #include "network.h"
 #include "device_core.h"
+#include "config_web_server.h"
 #include <esp_log.h>
-#include <esp_task_wdt.h>
-#include <esp_sleep.h>
 #include <freertos/FreeRTOS.h>
 #include <string>
 #include <string.h>
@@ -19,6 +18,7 @@ extern "C"
 }
 
 BLEComServer *_wifi_info_fetcher = NULL;
+ConfigWebServer *_config_server = NULL;
 
 void set_wifi_by_ble()
 {
@@ -67,7 +67,7 @@ void initAfterNetWork()
     firstRun = false;
 
     printf("[ network init complete ] ====\r\n");
-
+    _config_server = new ConfigWebServer();
 }
 
 void loop()
@@ -75,7 +75,7 @@ void loop()
     set_wifi_by_ble();
     initAfterNetWork();
 
-    esp_task_wdt_reset();
+    WatchDog::feed_dog();
 
     if (WiFi.status() == WL_CONNECTED)
     {  
@@ -85,12 +85,7 @@ void loop()
 
 void main_loop(void *pvParameters)
 {
-    esp_err_t err = esp_task_wdt_init(30, true);
-    if (err != ESP_OK)
-        ESP_LOGE(TAG, "esp_task_wdt_init failed: %d", err);
-    err = esp_task_wdt_add(NULL);
-    if (err != ESP_OK)
-        ESP_LOGE(TAG, "esp_task_wdt_add failed: %d", err);
+    WatchDog::buy_dog();
 
     while (true)
     {
@@ -118,6 +113,7 @@ void app_main()
     }
 
     Network::esp_initialize_sntp();
+    WatchDog::int_wdt();
 
     if (WiFi.status() != WL_CONNECTED)
     {

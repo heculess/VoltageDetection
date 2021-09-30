@@ -19,6 +19,7 @@ public:
     uint8_t *ptr();
     char *as_char_ptr();
     size_t length();
+    void zero_buffer();
 
 private:
     const size_t _length;

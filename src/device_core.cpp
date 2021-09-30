@@ -34,6 +34,76 @@ std::string DeviceCore::device_id()
     return device_id;
 }
 
+std::string DeviceCore::get_mqtt_broker()
+{
+    Preferences pref;
+    pref.begin(NAME_PREF_CONFIG, true);
+    return pref.getString(NAME_KEY_MQTT_BROKER, "");
+}
+
+int DeviceCore::get_mqtt_port()
+{
+    Preferences pref;
+    pref.begin(NAME_PREF_CONFIG, true);
+    return pref.getInt(NAME_KEY_MQTT_PORT, 1883);
+}
+
+std::string DeviceCore::get_mqtt_username()
+{
+    Preferences pref;
+    pref.begin(NAME_PREF_CONFIG, true);
+    return pref.getString(NAME_KEY_MQTT_USERNAME, "");
+}
+
+std::string DeviceCore::get_mqtt_password()
+{
+    Preferences pref;
+    pref.begin(NAME_PREF_CONFIG, true);
+    return pref.getString(NAME_KEY_MQTT_PASSWORD, "");
+}
+
+std::string DeviceCore::get_mqtt_topic()
+{
+    Preferences pref;
+    pref.begin(NAME_PREF_CONFIG, true);
+    return pref.getString(NAME_KEY_MQTT_TOPIC, "");
+}
+
+void DeviceCore::set_mqtt_broker(const char * broker)
+{
+    Preferences pref;
+    pref.begin(NAME_PREF_CONFIG);
+    pref.putString(NAME_KEY_MQTT_BROKER, broker);
+}   
+
+void DeviceCore::set_mqtt_port(int port)
+{
+    Preferences pref;
+    pref.begin(NAME_PREF_CONFIG);
+    pref.putInt(NAME_KEY_MQTT_PORT, port);
+}
+
+void DeviceCore::set_mqtt_username(const char * username)
+{
+    Preferences pref;
+    pref.begin(NAME_PREF_CONFIG);
+    pref.putString(NAME_KEY_MQTT_USERNAME, username);
+}
+
+void DeviceCore::set_mqtt_password(const char * password)
+{
+    Preferences pref;
+    pref.begin(NAME_PREF_CONFIG);
+    pref.putString(NAME_KEY_MQTT_PASSWORD, password);
+}
+
+void DeviceCore::set_mqtt_topic(const char * topic)
+{
+    Preferences pref;
+    pref.begin(NAME_PREF_CONFIG);
+    pref.putString(NAME_KEY_MQTT_TOPIC, topic);
+}
+
 void DeviceCore::GotoDeepSleepAndExit(int time)
 {
     if (time < 3)
@@ -58,4 +128,28 @@ TaskMutexLocker::~TaskMutexLocker()
     ESP_LOGD(TAG, "xSemaphoreGive");
     if (_mutex_handle)
         xSemaphoreGive(_mutex_handle);
+}
+
+void WatchDog::int_wdt()
+{
+    esp_err_t err = esp_task_wdt_init(30, true);
+    if (err != ESP_OK)
+        ESP_LOGE(TAG, "esp_task_wdt_init failed: %d", err);
+}
+
+void WatchDog::buy_dog()
+{
+    esp_err_t err = esp_task_wdt_add(NULL);
+    if (err != ESP_OK)
+        ESP_LOGE(TAG, "esp_task_wdt_add failed: %d", err);
+}
+
+void WatchDog::kill_dog()
+{
+    esp_task_wdt_delete(NULL);
+}
+
+void WatchDog::feed_dog()
+{
+    esp_task_wdt_reset(); 
 }

@@ -43,3 +43,8 @@ size_t PsramBuffer::length()
 {
     return _length;
 }
+
+void PsramBuffer::zero_buffer()
+{
+    memset(_buffer,0,_length);
+}
