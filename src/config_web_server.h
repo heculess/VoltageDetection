@@ -27,7 +27,7 @@ public:
     void set_cmd_handler_callback(WBSRV_CMD_HANDLER_CALLBACK callback);
 
 private:
-    httpd_handle_t debug_httpd;
+    httpd_handle_t config_httpd;
 
     WBSRV_CMD_HANDLER_CALLBACK _cmd_callback_handler;
 

@@ -105,13 +105,11 @@ void app_main()
     ESP_ERROR_CHECK(nvs_flash_init());
     WiFi.init();
 
-    bool hasWifiConfig = WiFi.has_wifi_config();
-    if (hasWifiConfig)
-    {
+    if (WiFi.has_wifi_config()){
+        
         WiFi.begin();
-        for (int i = 0; i < 20; i++) 
-        {
-            if (Network::auto_connect_wifi(10))
+        for (int i = 0; i < 3; i++){
+            if (Network::auto_connect_wifi(5))
                 break;
         }
     }
@@ -121,11 +119,6 @@ void app_main()
 
     if (WiFi.status() != WL_CONNECTED)
     {
-        if (hasWifiConfig)//有 wifi 信息连接不上，则重启重试
-        {
-            DeviceCore::GotoDeepSleepAndExit(10);
-            return;
-        }
         _wifi_info_fetcher = new BLEComServer();
         if (!_wifi_info_fetcher)
         {

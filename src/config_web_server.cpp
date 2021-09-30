@@ -5,7 +5,7 @@
 
 
 ConfigWebServer::ConfigWebServer(): 
-debug_httpd(NULL),
+config_httpd(NULL),
 _cmd_callback_handler(NULL)
 {
     start_server();
@@ -30,22 +30,20 @@ bool ConfigWebServer::start_server()
         .handler = index_handler,
         .user_ctx = this};
 
-    config.server_port += 1;
-    config.ctrl_port += 1;
-    if (httpd_start(&debug_httpd, &config) == ESP_OK)
+    if (httpd_start(&config_httpd, &config) == ESP_OK)
     {
-        httpd_register_uri_handler(debug_httpd, &config_uri);
-        httpd_register_uri_handler(debug_httpd, &index_uri);
+        httpd_register_uri_handler(config_httpd, &config_uri);
+        httpd_register_uri_handler(config_httpd, &index_uri);
     }
 
-    printf("start debug web server\r\n");
+    printf("start config web server\r\n");
 
     return true;
 }
 
 void ConfigWebServer::stop_server()
 {
-    httpd_stop(debug_httpd);
+    httpd_stop(config_httpd);
     printf("debug web server stopped\r\n");
 }
 
@@ -159,13 +157,37 @@ esp_err_t ConfigWebServer::config_handler(httpd_req_t *req)
 
 esp_err_t ConfigWebServer::index_handler(httpd_req_t *req)
 {
+    printf("index_handler\r\n");
     httpd_resp_set_type(req, "text/html");
 
-    std::string response = std::string(" ");
-
-    //ConfigWebServer *pServer = (ConfigWebServer *)req->user_ctx;
-
-
+    std::string response = std::string("<!DOCTYPE html><html><head>"
+        "<META http-equiv=Content-Type content=\"text/html; charset=GB2312\">"
+        "<style>.div-left{ float:left;width:30%;height:25px;text-align:left;}"
+        ".div-right{ float:right;width:70%;height:25px;text-align:right;}"
+        "</style></head><body><div style=\"width:100%;text-align:center\">"
+        "<h2>MQTT 设置</h2><form action=\"#\" method=\"post\">"
+        "<div style=\"width:500px;margin:0px auto;\">"
+        "<div class=\"div-left\">MQTT 服务器地址：</div><div class=\"div-right\">"
+        "<input style=\"width:330px\" name=\"broker\" type=\"text\" value=\"");
+        response.append(DeviceCore::get_mqtt_broker());
+        response.append("\"></div><div class=\"div-left\">MQTT 服务器端口：</div>"
+            "<div class=\"div-right\"><input name=\"port\" type=\"text\" value=\"");
+        response.append(std::to_string(DeviceCore::get_mqtt_port()));
+        response.append("\"></div><div class=\"div-left\">MQTT 客户端ID：</div><div class=\"div-right\">"
+            "<input name=\"devicename\" type=\"text\" value=\"");
+        response.append(DeviceCore::get_device_name());
+        response.append("\"></div><div class=\"div-left\">MQTT 用户名：</div><div class=\"div-right\">"
+            "<input name=\"username\" type=\"text\" value=\"");
+        response.append(DeviceCore::get_mqtt_username());
+        response.append("\"></div><div class=\"div-left\">MQTT 密码：</div><div class=\"div-right\">"
+            "<input name=\"password\" type=\"password\" value=\"");
+        response.append(DeviceCore::get_mqtt_password());
+        response.append("\"></div><div class=\"div-left\">MQTT 订阅地址：</div><div class=\"div-right\">"
+            "<input name=\"topic\" type=\"text\" value=\"");
+        response.append(DeviceCore::get_mqtt_topic());
+        response.append("\"></div><div style=\"float:left;width:100%;height:30px;\">"
+            "</div><div style=\"height:25px;text-align:right;\"><input type=\"submit\" value=\"提交\"></div>"
+            "</div></form></div></body></html>");
 
     return httpd_resp_send(req, response.c_str(), response.length());
 }

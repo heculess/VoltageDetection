@@ -200,9 +200,7 @@ void ReportMQTT::MQTTMessagePatch(void *pvParameters)
 
 void ReportMQTT::on_topic_callback(const char *topic, char *payload, unsigned int length)
 {
-  UBaseType_t waiting_number = uxQueueMessagesWaiting(_mqtt_evt_queue);
   PublishBufferHelper *string_send = new PublishBufferHelper((char *)payload, length);
-
   xQueueSend(_mqtt_evt_queue, &string_send, portMAX_DELAY);
 }
 
