@@ -38,7 +38,7 @@ std::string DeviceCore::get_mqtt_broker()
 {
     Preferences pref;
     pref.begin(NAME_PREF_CONFIG, true);
-    return pref.getString(NAME_KEY_MQTT_BROKER, "");
+    return pref.getString(NAME_KEY_MQTT_BROKER, "192.168.2.80");
 }
 
 int DeviceCore::get_mqtt_port()
@@ -52,21 +52,28 @@ std::string DeviceCore::get_mqtt_username()
 {
     Preferences pref;
     pref.begin(NAME_PREF_CONFIG, true);
-    return pref.getString(NAME_KEY_MQTT_USERNAME, "");
+    return pref.getString(NAME_KEY_MQTT_USERNAME, "default_user");
 }
 
 std::string DeviceCore::get_mqtt_password()
 {
     Preferences pref;
     pref.begin(NAME_PREF_CONFIG, true);
-    return pref.getString(NAME_KEY_MQTT_PASSWORD, "");
+    return pref.getString(NAME_KEY_MQTT_PASSWORD, "default_password");
 }
 
 std::string DeviceCore::get_mqtt_topic()
 {
     Preferences pref;
     pref.begin(NAME_PREF_CONFIG, true);
-    return pref.getString(NAME_KEY_MQTT_TOPIC, "");
+    return pref.getString(NAME_KEY_MQTT_TOPIC, "device/monitor/status/power_status");
+}
+
+std::string DeviceCore::get_device_name()
+{
+    Preferences pref;
+    pref.begin(NAME_PREF_CONFIG, true);
+    return pref.getString(NAME_KEY_DEVICE_NAME, "livingroom_television");
 }
 
 void DeviceCore::set_mqtt_broker(const char * broker)
@@ -102,6 +109,13 @@ void DeviceCore::set_mqtt_topic(const char * topic)
     Preferences pref;
     pref.begin(NAME_PREF_CONFIG);
     pref.putString(NAME_KEY_MQTT_TOPIC, topic);
+}
+
+void DeviceCore::set_device_name(const char * name)
+{
+    Preferences pref;
+    pref.begin(NAME_PREF_CONFIG);
+    pref.putString(NAME_KEY_DEVICE_NAME, name);
 }
 
 void DeviceCore::GotoDeepSleepAndExit(int time)

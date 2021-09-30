@@ -4,6 +4,7 @@
 #include <nvs_flash.h>
 #include "network.h"
 #include "device_core.h"
+#include "report_mqtt.h"
 #include "config_web_server.h"
 #include <esp_log.h>
 #include <freertos/FreeRTOS.h>
@@ -79,6 +80,7 @@ void loop()
 
     if (WiFi.status() == WL_CONNECTED)
     {  
+        ReportMQTT::publish("");
     }
 }
 
@@ -87,10 +89,12 @@ void main_loop(void *pvParameters)
 {
     WatchDog::buy_dog();
 
+    ReportMQTT::InitMQTT(1, nullptr);
+
     while (true)
     {
         loop();
-        delay(500);
+        delay(1000);
     }
 
     vTaskDelete(NULL);

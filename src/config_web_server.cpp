@@ -82,15 +82,18 @@ esp_err_t ConfigWebServer::config_handler(httpd_req_t *req)
         httpd_resp_send_404(req);
         return ESP_FAIL;
     }
+
     PsramBuffer value(buf_len);
     bool config_change = false;
+
     if (httpd_query_key_value(cmd_buf.as_char_ptr(), "broker", value.as_char_ptr(), value.length()) == ESP_OK)
     {
-        if(DeviceCore::get_mqtt_broker() != value.as_char_ptr());{
+        if(DeviceCore::get_mqtt_broker() != value.as_char_ptr()){
             DeviceCore::set_mqtt_broker(value.as_char_ptr());
             config_change = true;
         }    
     }
+
     value.zero_buffer();
     if (httpd_query_key_value(cmd_buf.as_char_ptr(), "username", value.as_char_ptr(), value.length()) == ESP_OK)
     {
@@ -99,6 +102,7 @@ esp_err_t ConfigWebServer::config_handler(httpd_req_t *req)
             config_change = true;
         }
     }
+
     value.zero_buffer();
     if (httpd_query_key_value(cmd_buf.as_char_ptr(), "password", value.as_char_ptr(), value.length()) == ESP_OK)
     {
@@ -106,8 +110,8 @@ esp_err_t ConfigWebServer::config_handler(httpd_req_t *req)
             DeviceCore::set_mqtt_password(value.as_char_ptr());
             config_change = true;
         }
-        
     }
+
     value.zero_buffer();
     if (httpd_query_key_value(cmd_buf.as_char_ptr(), "topic", value.as_char_ptr(), value.length()) == ESP_OK)
     {
@@ -116,8 +120,18 @@ esp_err_t ConfigWebServer::config_handler(httpd_req_t *req)
             DeviceCore::set_mqtt_topic(value.as_char_ptr());
             config_change = true;
         }
-        
     }
+
+    value.zero_buffer();
+    if (httpd_query_key_value(cmd_buf.as_char_ptr(), "devicename", value.as_char_ptr(), value.length()) == ESP_OK)
+    {
+        if(DeviceCore::get_device_name() != value.as_char_ptr())
+        {
+            DeviceCore::set_device_name(value.as_char_ptr());
+            config_change = true;
+        }
+    }
+
     value.zero_buffer();
     if (httpd_query_key_value(cmd_buf.as_char_ptr(), "port", value.as_char_ptr(), value.length()) == ESP_OK)
     {
@@ -149,7 +163,7 @@ esp_err_t ConfigWebServer::index_handler(httpd_req_t *req)
 
     std::string response = std::string(" ");
 
-    ConfigWebServer *pServer = (ConfigWebServer *)req->user_ctx;
+    //ConfigWebServer *pServer = (ConfigWebServer *)req->user_ctx;
 
 
 

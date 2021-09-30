@@ -18,6 +18,8 @@
 #define NAME_KEY_MQTT_PASSWORD "mqtt_password"
 #define NAME_KEY_MQTT_TOPIC "mqtt_topic"
 
+#define NAME_KEY_DEVICE_NAME "device_name"
+
 #ifdef __cplusplus
 extern "C"
 {
@@ -34,11 +36,15 @@ extern "C"
         static std::string get_mqtt_password();
         static std::string get_mqtt_topic();
 
+        static std::string get_device_name();
+
         static void set_mqtt_broker(const char * broker);
         static void set_mqtt_port(int port);
         static void set_mqtt_username(const char * username);
         static void set_mqtt_password(const char * password);
         static void set_mqtt_topic(const char * topic);
+
+        static void set_device_name(const char * username);
 
         static void GotoDeepSleepAndExit(int time);
     };
