@@ -102,7 +102,9 @@ ReportMQTT::ReportMQTT() : _mqtt_client(NULL),
 {
   esp_mqtt_client_config_t mqtt_cfg;
   memset(&mqtt_cfg, 0, sizeof(mqtt_cfg));
-  mqtt_cfg.uri = mqttBroker.c_str();
+  //mqtt_cfg.uri = mqttBroker.c_str();
+  mqtt_cfg.host = DeviceCore::get_mqtt_broker().c_str();
+  mqtt_cfg.port = DeviceCore::get_mqtt_port();
   mqtt_cfg.client_id = DeviceCore::device_id().c_str();
   mqtt_cfg.username = mqttUserName.c_str();
   mqtt_cfg.password = mqttPassword.c_str();
@@ -224,19 +226,9 @@ void ReportMQTT::CreateMQTTService(void *pvParameters)
     if (WiFi.status() == WL_CONNECTED)
     {
       if (!mqtt_client.connected())
-      {
-        if (!mqtt_client.connect())
-          WatchDog::feed_dog();
-      }
-      else
-      {
-        WatchDog::feed_dog();
-
-        mqtt_client.publish_msg();
-#ifdef UNIT_TEST
-        mqtt_client.publish_p2p_msg();
-#endif
-      }
+        mqtt_client.connect();
+      
+      mqtt_client.publish_msg();
     }
     vTaskDelay(200);
   }
@@ -268,7 +260,7 @@ void ReportMQTT::publish_msg()
   PublishBufferHelper *buffer_helper = NULL;
   if (!xQueueReceive(_mqtt_publish_queue, &buffer_helper, 0) || (!buffer_helper))
     return;
-
+  
   publish(DeviceCore::get_mqtt_topic().c_str(), buffer_helper->get_payload().c_str());
  
   delete buffer_helper;

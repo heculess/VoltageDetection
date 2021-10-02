@@ -80,7 +80,9 @@ void loop()
 
     if (WiFi.status() == WL_CONNECTED)
     {  
-        ReportMQTT::publish("");
+        JsonSerializer json;
+        json.add_value(DeviceCore::get_device_name().c_str(), "power_on");
+        ReportMQTT::publish(json.serialize().c_str());
     }
 }
 
@@ -106,7 +108,7 @@ void app_main()
     WiFi.init();
 
     if (WiFi.has_wifi_config()){
-        
+
         WiFi.begin();
         for (int i = 0; i < 3; i++){
             if (Network::auto_connect_wifi(5))
