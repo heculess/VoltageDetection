@@ -30,7 +30,7 @@ private:
     httpd_handle_t config_httpd;
 
     WBSRV_CMD_HANDLER_CALLBACK _cmd_callback_handler;
-
+    static void restart_later(void *pvParameters);
 private:
     static esp_err_t config_handler(httpd_req_t *req);
     static esp_err_t index_handler(httpd_req_t *req);
