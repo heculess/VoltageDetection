@@ -93,10 +93,12 @@ void main_loop(void *pvParameters)
 
     ReportMQTT::InitMQTT(1, nullptr);
 
+    int delay_time = DeviceCore::get_mainloop_delay();
+
     while (true)
     {
         loop();
-        delay(1000);
+        delay(delay_time);
     }
 
     vTaskDelete(NULL);

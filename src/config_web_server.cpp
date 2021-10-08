@@ -166,6 +166,17 @@ esp_err_t ConfigWebServer::config_handler(httpd_req_t *req)
         }
     }
 
+    value.zero_buffer();
+    if (httpd_query_key_value(cmd_buf.as_char_ptr(), "loopdelay", value.as_char_ptr(), value.length()) == ESP_OK)
+    {
+        int loop_delay = atoi(value.as_char_ptr());
+        if(DeviceCore::get_mainloop_delay() != loop_delay)
+        {
+            DeviceCore::set_mainloop_delay(loop_delay);
+            config_change = true;
+        }
+    }
+
     httpd_resp_set_type(req, "text/html");
 
     std::string response = std::string("Config succeed !!");
@@ -218,6 +229,9 @@ esp_err_t ConfigWebServer::index_handler(httpd_req_t *req)
         response.append("\"></div><div class=\"div-left\">MQTT 订阅地址：</div><div class=\"div-right\">"
             "<input style=\"width:330px\" name=\"topic\" type=\"text\" value=\"");
         response.append(DeviceCore::get_mqtt_topic());
+        response.append("\"></div><div class=\"div-left\">主循环延迟间隔：</div><div class=\"div-right\">"
+            "<input style=\"width:330px\" name=\"loopdelay\" type=\"text\" value=\"");
+        response.append(std::to_string(DeviceCore::get_mainloop_delay()));
         response.append("\"></div><div style=\"float:left;width:100%;height:30px;\">"
             "</div><div style=\"height:25px;text-align:right;\"><input type=\"submit\" value=\"提交\"></div>"
             "</div></form></div></body></html>");

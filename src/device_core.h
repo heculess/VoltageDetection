@@ -17,6 +17,7 @@
 #define NAME_KEY_MQTT_USERNAME "mqtt_username"
 #define NAME_KEY_MQTT_PASSWORD "mqtt_password"
 #define NAME_KEY_MQTT_TOPIC "mqtt_topic"
+#define NAME_KEY_MAINLOOP_delay "mainloop_delay"
 
 #define NAME_KEY_DEVICE_NAME "device_name"
 
@@ -38,6 +39,8 @@ extern "C"
 
         static std::string get_device_name();
 
+        static int get_mainloop_delay();
+
         static void set_mqtt_broker(const char * broker);
         static void set_mqtt_port(int port);
         static void set_mqtt_username(const char * username);
@@ -45,6 +48,7 @@ extern "C"
         static void set_mqtt_topic(const char * topic);
 
         static void set_device_name(const char * username);
+        static void set_mainloop_delay(int delay_time);
 
         static void GotoDeepSleepAndExit(int time);
     };

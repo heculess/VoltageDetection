@@ -76,6 +76,13 @@ std::string DeviceCore::get_device_name()
     return pref.getString(NAME_KEY_DEVICE_NAME, "livingroom_television");
 }
 
+int DeviceCore::get_mainloop_delay()
+{
+    Preferences pref;
+    pref.begin(NAME_PREF_CONFIG, true);
+    return pref.getInt(NAME_KEY_MAINLOOP_delay, 1000);
+}
+
 void DeviceCore::set_mqtt_broker(const char * broker)
 {
     Preferences pref;
@@ -116,6 +123,13 @@ void DeviceCore::set_device_name(const char * name)
     Preferences pref;
     pref.begin(NAME_PREF_CONFIG);
     pref.putString(NAME_KEY_DEVICE_NAME, name);
+}
+
+void DeviceCore::set_mainloop_delay(int delay_time)
+{
+    Preferences pref;
+    pref.begin(NAME_PREF_CONFIG);
+    pref.putInt(NAME_KEY_MAINLOOP_delay, delay_time);
 }
 
 void DeviceCore::GotoDeepSleepAndExit(int time)
